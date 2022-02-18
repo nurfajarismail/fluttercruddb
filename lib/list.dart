@@ -1,5 +1,8 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:fluttercruddb/details.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
@@ -13,32 +16,38 @@ class ListPage extends StatefulWidget {
 
 class _ListPageState extends State<ListPage> {
   Future<List> getData() async {
-    final response = await http
-        .get(Uri.parse("https://fajardomain.000webhostapp.com/list.php"));
+    final response = await http.get(Uri.parse(
+        "https://fajardomain.000webhostapp.com/fluttercruddb/list.php"));
     return jsonDecode(response.body);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Daftar nama"),
-        ),
-        body: FutureBuilder<List>(
-          future: getData(),
-          builder: (context, snapshot) {
-            // ignore: avoid_print
-            if (snapshot.hasError) print(snapshot.error);
-            return snapshot.hasData
-                ? ItemList(list: snapshot.data ?? [])
-                : const Center(child: CircularProgressIndicator());
-          },
-        ));
+      appBar: AppBar(
+        title: const Text("Daftar nama"),
+      ),
+      body: FutureBuilder<List>(
+        future: getData(),
+        builder: (context, snapshot) {
+          // ignore: avoid_print
+          if (snapshot.hasError) print(snapshot.error);
+          return snapshot.hasData
+              ? ItemList(list: snapshot.data ?? [])
+              : const Center(child: CircularProgressIndicator());
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
+      ),
+    );
   }
 }
 
 class ItemList extends StatelessWidget {
   final List list;
+
   // ignore: prefer_const_constructors_in_immutables, use_key_in_widget_constructors
   ItemList({required this.list});
 
@@ -61,17 +70,14 @@ class ItemList extends StatelessWidget {
             Column(
               children: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return DetailOrang(list, index);
+                    }));
+                  },
                   child: const Text("Detail"),
                 ),
-                TextButton(
-                  onPressed: () {},
-                  child: const Text("Edit"),
-                ),
-                TextButton(
-                  onPressed: () {},
-                  child: const Text("Hapus"),
-                )
               ],
             )
           ],
