@@ -32,15 +32,12 @@ class DetailOrang extends StatelessWidget {
               actions: <Widget>[
                 TextButton(
                   onPressed: () => Navigator.pop(context, 'Cancel'),
-                  child: const Text('kembali'),
+                  child: const Text('Kembali'),
                 ),
                 TextButton(
                   onPressed: () {
                     deleteData();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ListPage()),
-                    );
+                    Navigator.of(context).pop();
                   },
                   child: const Text('YA'),
                 ),

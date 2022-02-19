@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:fluttercruddb/add.dart';
 import 'package:fluttercruddb/details.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -38,24 +39,36 @@ class _ListPageState extends State<ListPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => const AddData()))
+              .then((value) => getData());
+          // Navigator.push(context, MaterialPageRoute(builder: (context) {
+          //   return const AddData();
+          // })).then((value) => value ? getData() : null);
+        },
         child: const Icon(Icons.add),
       ),
     );
   }
 }
 
-class ItemList extends StatelessWidget {
+class ItemList extends StatefulWidget {
   final List list;
 
   // ignore: prefer_const_constructors_in_immutables, use_key_in_widget_constructors
   ItemList({required this.list});
 
   @override
+  State<ItemList> createState() => _ItemListState();
+}
+
+class _ItemListState extends State<ItemList> {
+  @override
   Widget build(BuildContext context) {
     return ListView.builder(
       // ignore: unnecessary_null_comparison
-      itemCount: list == null ? 0 : list.length,
+      itemCount: widget.list == null ? 0 : widget.list.length,
       itemBuilder: (context, index) {
         return Card(
             child: Row(
@@ -63,18 +76,21 @@ class ItemList extends StatelessWidget {
           children: [
             Column(
               children: [
-                Text(list[index]['nama']),
+                Text(widget.list[index]['nama']),
               ],
             ),
             // ignore: prefer_const_literals_to_create_immutables
             Column(
               children: [
-                TextButton(
+                ElevatedButton(
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return DetailOrang(list, index);
-                    }));
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: ((context) =>
+                            DetailOrang(widget.list, index))));
+                    // Navigator.push(context,
+                    //     MaterialPageRoute(builder: (context) {
+                    //   return DetailOrang(widget.list, index);
+                    // }));
                   },
                   child: const Text("Detail"),
                 ),
