@@ -1,58 +1,10 @@
-// ignore_for_file: must_be_immutable
-
-import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:fluttercruddb/add.dart';
-import 'package:fluttercruddb/details.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+import 'details.dart';
 
-class ListPage extends StatefulWidget {
-  // ignore: prefer_const_constructors_in_immutables
-  ListPage({Key? key}) : super(key: key);
-
-  @override
-  _ListPageState createState() => _ListPageState();
-}
-
-class _ListPageState extends State<ListPage> {
-  Future<List> getData() async {
-    final response = await http.get(Uri.parse(
-        "https://fajardomain.000webhostapp.com/fluttercruddb/list.php"));
-    return jsonDecode(response.body);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Daftar nama"),
-      ),
-      body: FutureBuilder<List>(
-        future: getData(),
-        builder: (context, snapshot) {
-          // ignore: avoid_print
-          if (snapshot.hasError) print(snapshot.error);
-          return snapshot.hasData
-              ? ItemList(list: snapshot.data ?? [])
-              : const Center(child: CircularProgressIndicator());
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (_) => const AddData()))
-              .then((value) => getData());
-          // Navigator.push(context, MaterialPageRoute(builder: (context) {
-          //   return const AddData();
-          // })).then((value) => value ? getData() : null);
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-}
-
+// ignore: must_be_immutable
 class ItemList extends StatefulWidget {
   final List list;
 
@@ -64,6 +16,18 @@ class ItemList extends StatefulWidget {
 }
 
 class _ItemListState extends State<ItemList> {
+  Future<List> getData() async {
+    final response = await http.get(Uri.parse(
+        "https://fajardomain.000webhostapp.com/fluttercruddb/list.php"));
+    return jsonDecode(response.body);
+    // ignore: dead_code
+  }
+
+  FutureOr onGoBack(dynamic value) {
+    getData();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -84,15 +48,44 @@ class _ItemListState extends State<ItemList> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: ((context) =>
-                            DetailOrang(widget.list, index))));
+                    Route route = MaterialPageRoute(
+                      builder: (context) => DetailOrang(widget.list, index),
+                    );
+
+                    Navigator.push(context, route).then((onGoBack));
+                    // Navigator.of(context).push(MaterialPageRoute(
+                    //     builder: ((context) =>
+                    //         DetailOrang(widget.list, index))));
                     // Navigator.push(context,
                     //     MaterialPageRoute(builder: (context) {
                     //   return DetailOrang(widget.list, index);
                     // }));
                   },
                   child: const Text("Detail"),
+                ),
+                ElevatedButton(
+                  onPressed: () => showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => AlertDialog(
+                      title: const Text('Peringatan'),
+                      content:
+                          const Text('Apakah anda yakin ingin menghapus ini?'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, 'Cancel'),
+                          child: const Text('Kembali'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            // deleteData();
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('YA'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  child: const Text("Hapus"),
                 ),
               ],
             )
@@ -101,4 +94,10 @@ class _ItemListState extends State<ItemList> {
       },
     );
   }
+
+  // void deleteData() {
+  //   var url = Uri.parse(
+  //       "https://fajardomain.000webhostapp.com/fluttercruddb/delete.php");
+  //   http.post(url, body: {'id': list[index]['id']});
+  // }
 }

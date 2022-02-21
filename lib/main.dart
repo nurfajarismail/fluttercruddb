@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluttercruddb/list.dart';
+import 'package:fluttercruddb/homepage.dart';
 
 void main() {
   runApp(const MyApp());

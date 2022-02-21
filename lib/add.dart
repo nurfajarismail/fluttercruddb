@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 //import 'package:fluttercruddb/list.dart';
 import 'package:http/http.dart' as http;
 
-import 'list.dart';
 
 class AddData extends StatefulWidget {
   const AddData({Key? key}) : super(key: key);
@@ -45,7 +44,8 @@ class _AddDataState extends State<AddData> {
         child: const Text("Tambah"),
         onPressed: () {
           addData();
-          Navigator.of(context).pop(ListPage());
+          Navigator.pop(context);
+          // Navigator.of(context).pop(ListPage());
           // Navigator.push(
           //   context,
           //   MaterialPageRoute(builder: (context) => ListPage()),

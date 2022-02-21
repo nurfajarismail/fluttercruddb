@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fluttercruddb/list.dart';
+
 import 'package:http/http.dart' as http;
 
 // ignore: must_be_immutable
@@ -37,16 +37,19 @@ class DetailOrang extends StatelessWidget {
                 TextButton(
                   onPressed: () {
                     deleteData();
+
                     Navigator.of(context).pop();
                   },
                   child: const Text('YA'),
                 ),
               ],
             ),
-          ),
+          ).then((_) => setState(() {})),
           child: const Text('Delete'),
         )
       ]),
     );
   }
+
+  setState(Null Function() param0) {}
 }
